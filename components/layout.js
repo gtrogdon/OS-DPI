@@ -637,6 +637,7 @@ export class Layout extends Base {
 
 css`
   div.layout {
+    margin: 0.5rem;
     display: flex;
     flex-direction: column;
     flex: 1 1 0;
@@ -645,6 +646,8 @@ css`
 
   div.tree {
     overflow-y: auto;
+    border: 1px solid black;
+    padding: 0em 0.5em;
   }
 
   .tree ul[role="tree"] {
@@ -674,6 +677,15 @@ css`
     display: inline-block;
     margin-right: 6px;
     transform: rotate(90deg);
+  }
+
+  .tree ul[role="group"] li[aria-selected="true"] > ul[role="group"] {
+    border: 3px solid blue;
+    margin-left: 1em;
+  }
+
+  .tree li[aria-selected="true"] > span:only-child {
+    border: 3px solid green;
   }
 
   .tree li[aria-selected="true"] > span {
