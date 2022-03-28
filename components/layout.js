@@ -470,18 +470,22 @@ export class Layout extends Base {
 
   /** Render the controls */
   controls() {
-    return html`<div class="controls">
-      <h1>Editing ${this.selected.constructor.name} ${this.selected.name}</h1>
-      ${this.addMenu()} ${this.deleteCurrent()} ${this.moveMenu()}
-      ${this.cutButton()} ${this.pasteButton()}
-      <div class="props">${this.showProps()}</div>
-      <button
-        id="controls-return"
-        help="Return"
-        onclick=${() => this.closeControls()}
-      >
-        Return</button
-      ><button disabled help="Cancel">Cancel</button>
+    return html`<div style="display: flex;" class="controls">
+      <div style="flex-direction: column" class="props">
+        ${this.showProps()}
+      </div>
+
+      <div class="commands">
+        ${this.addMenu()}${this.moveMenu()} ${this.deleteCurrent()} 
+        ${this.cutButton()} ${this.pasteButton()}
+        <button
+          id="controls-return"
+          help="Return"
+          onclick=${() => this.closeControls()}
+        >
+          Return
+        </button>
+      </div>
     </div>`;
   }
   /**
@@ -522,6 +526,10 @@ export class Layout extends Base {
               this.setSelected(tree, true);
             }
           }}
+          ondragover=${(e) => e.preventDefault()}
+          ondrop=${(e) => {
+            e.preventDefault();
+          }}
           .dataset=${{ componentId: tree.id }}
         >
           ${tree.constructor.name} ${tree.name}
@@ -545,6 +553,13 @@ export class Layout extends Base {
       >
         <span
           role="button"
+          draggable="true"
+          ondragstart=${(e) => {
+            e.target.parentElement;
+          }}
+          ondrop=${(e) => {
+            e.preventDefault();
+          }}
           onclick=${() => this.setSelected(tree, true)}
           .dataset=${{ componentId: tree.id }}
           >${tree.constructor.name} ${tree.name}</span
@@ -592,7 +607,7 @@ export class Layout extends Base {
         if (event.ctrlKey) {
           this.clipTree(this.selected, true);
           break;
-        } 
+        }
       case " ":
       case "Enter":
         this.update({ editingTree: true });
@@ -648,6 +663,12 @@ css`
     overflow-y: auto;
     border: 1px solid black;
     padding: 0em 0.5em;
+
+    user-select: none; /* supported by Chrome and Opera */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
   }
 
   .tree ul[role="tree"] {
@@ -662,6 +683,10 @@ css`
   .tree li[aria-expanded] span::before {
     cursor: pointer;
     user-select: none;
+  }
+
+  .tree span:hover {
+    background-color: lightblue;
   }
 
   .tree li[aria-expanded="false"] > span::before {
@@ -705,5 +730,21 @@ css`
   div.highlight {
     border: 1px solid red;
     box-sizing: border-box;
+  }
+
+  div.controls {
+    margin-top: 1em;
+    padding: 1em 1em;
+    border: 1px solid black;
+    flex-direction: row;
+    align-items: baseline;
+  }
+
+  div.commands {
+    display: flex;
+    padding: 1em 1em;
+    border: 1px solid black;
+    flex-wrap: wrap;
+    align-items: baseline;
   }
 `;
